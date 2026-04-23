@@ -1,0 +1,30 @@
+name: 天気通知
+
+on:
+  schedule:
+    - cron: '0 22 * * *'  # 毎日22:00 UTC = 翌7:00 JST
+  workflow_dispatch:       # 手動実行ボタンも有効化
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: 天気を確認して通知
+        run: python weather_notify.py
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          LATITUDE: '36.40'
+          LONGITUDE: '138.25'
+          LOCATION_NAME: '上田市上田原'
+          THRESHOLD: '50'
