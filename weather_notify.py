@@ -7,8 +7,10 @@ weather_notify.py
 """
 
 import sys
-from datetime import date
+from datetime import datetime, timezone, timedelta
 import requests
+
+JST = timezone(timedelta(hours=9))
 from dotenv import load_dotenv
 import os
 
@@ -40,7 +42,7 @@ def get_max_precipitation_probability() -> int:
     times = data["hourly"]["time"]
     probs = data["hourly"]["precipitation_probability"]
 
-    today_str = date.today().isoformat()   # 例: "2025-06-15"
+    today_str = datetime.now(JST).date().isoformat()  # JSTで今日の日付を取得
     today_probs = [
         prob for t, prob in zip(times, probs)
         if t.startswith(today_str) and prob is not None
@@ -75,7 +77,8 @@ def send_ntfy_notification(title: str, message: str) -> None:
 
 
 def main() -> None:
-    print(f"[天気通知] {date.today()} の天気情報を取得中... ({LOCATION_NAME})")
+    today_jst = datetime.now(JST).date()
+    print(f"[天気通知] {today_jst}（JST）の天気情報を取得中... ({LOCATION_NAME})")
 
     try:
         max_prob = get_max_precipitation_probability()
