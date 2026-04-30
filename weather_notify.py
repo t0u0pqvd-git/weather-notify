@@ -77,8 +77,15 @@ def send_ntfy_notification(title: str, message: str) -> None:
 
 
 def main() -> None:
-    today_jst = datetime.now(JST).date()
+    now_jst = datetime.now(JST)
+    today_jst = now_jst.date()
     print(f"[天気通知] {today_jst}（JST）の天気情報を取得中... ({LOCATION_NAME})")
+
+    # GitHub Actions の遅延対策：5〜10時以外に実行された場合はスキップ
+    jst_hour = now_jst.hour
+    if not (5 <= jst_hour < 10):
+        print(f"通知時間外（現在{jst_hour}時 JST）のためスキップします。")
+        sys.exit(0)
 
     try:
         max_prob = get_max_precipitation_probability()
