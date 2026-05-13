@@ -1,11 +1,7 @@
 name: 天気通知
 
 on:
-  schedule:
-    - cron: '0 21 * * *'   # 6:00 JST（遅延しても7時台に届くよう早めに）
-    - cron: '0 22 * * *'   # 7:00 JST
-    - cron: '0 23 * * *'   # 8:00 JST（念のため）
-  workflow_dispatch:        # 手動実行・外部サービスからのトリガー用
+  workflow_dispatch:        # cron-job.org からのトリガーのみ
 
 jobs:
   notify:
